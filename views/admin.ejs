@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+  <script src="/layui/layui.js"></script>
+  <link rel="stylesheet" type="text/css" href="./bootstrap/css/bootstrap.min.css">
+  <script type="text/javascript" src="./bootstrap/js/jquery-1.10.1.js"></script>
+  <script type="text/javascript" src="./bootstrap/js/bootstrap.min.js"></script>
+  <title>Document</title>
+  <style>
+    #admin{
+      margin-top: 60px;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include("header")%>
+  <%if(username=="zd"){%>
+  <div class="container" id="admin">
+    <table class="table table-hover  text-center">
+      <thead>
+        <tr>
+          <td class="col-xs-1 col-md-1">username</td>
+          <td class="col-xs-2 col-md-1"> password</td>
+          <td class="col-xs-2 col-md-1">email</td>
+          <td class="col-xs-3 col-md-3"> </td>
+        </tr>
+      </thead>
+      <tbody>
+        <%result.forEach((val,ind)=>{%>
+          <tr>
+    
+            <td class="username">
+              <%-val.username%>
+            </td>
+            <td class="password">
+              <%-val.password%>
+            </td>
+            <td class="email">
+              <%-val.email%>
+            </td>
+            <td>
+              <button class="btn btn-info btn-primary" id="updbtn" onclick="update('<%-val._id%>')" type="button" data-toggle="modal" data-target="#updatebox">
+                update
+              </button>
+              <button class="btn del btn-danger" onclick="del('<%-val._id%>')">
+                del
+              </button>
+            </td>
+          </tr>
+          <%})%>
+      </tbody>
+    </table>
+    <div class="modal fade" id="updatebox" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="exampleModalLabel">修改用户信息</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="username" class="control-label">_id</label>
+                <input type="text" class="form-control" id="user_id" name="user_id" disabled>
+              </div>
+              <div class="form-group">
+                <label for="username" class="control-label">用户名:</label>
+                <input type="text" class="form-control" id="username" name="username">
+              </div>
+              <div class="form-group">
+                <label for="text" class="control-label">密码:</label>
+                <input type="text" class="form-control" id="password" name="password">
+              </div>
+              <div class="form-group">
+                <label for="password" class="control-label">邮箱:</label>
+                <input type="text" class="form-control" id="email" name="email">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-info " onclick="updatenow()">修改</button>
+          </div>
+          <table class="table table-hover  text-center">
+            <thead>
+              <h4 style="text-indent:2em">该用户的所有评论</h4>
+              <tr>
+                <td class="col-xs-2 col-md-2">时间</td>
+                <td class="col-xs-1 col-md-1">书籍</td>
+                <td class="col-xs-2 col-md-1">内容</td>
+                <td class="col-xs-2 col-md-1">do</td>
+
+              </tr>
+            </thead>
+            <tbody id="dotr">
+
+            </tbody>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%}else{%>
+    <script>
+      location.href="/"
+      </script>
+  <%}%>
+</body>
+</html>
+<script>
+  //删除
+  function del(id) {
+    layui.use('layer', function () {
+      var layer = layui.layer;
+      layer.confirm('确定删除?', { title: '' }, (index) => {
+        delUser(id);
+      });
+    })
+  }
+  function delUser(id) {
+    var url = "/admin/del";
+    var postData = {
+      id: id
+    }
+    $.post(url, postData, (data) => {
+      if (data.status == 1) {
+        layer.msg('删除成功', {
+          icon: 1,
+          closeBtn: 0,
+          time: 1000
+        }, () => {
+          location.href = "/admin";
+        });
+      }
+    })
+  }
+  //更新
+
+  function update(id) {
+    var url = "/admin/update";
+    var postData = {
+      id: id
+    }
+    $.post(url, postData, (data) => {
+      var userInfo = data.result.userInfo;
+      $('#username').val(userInfo.username);
+      $('#password').val(userInfo.password);
+      $('#email').val(userInfo.email);
+      $('#user_id').val(userInfo._id);
+      var comms = data.result.comms;
+      var str = "";
+      comms.forEach((val, ind) => {
+        str += ` <tr class="comm_user">
+                  <td class="time">${val.time}</td>
+                  <td class="shuji">${val.booktitle}</td>
+                  <td class="comm">${val.centent}</td>
+                  <td>
+                    <button class="btn  btn-danger" onclick="delcom('${val._id}')">
+                        del
+                    </button>  
+                  </td>    
+              </tr>`;
+
+      });
+      $('#dotr').html(str);
+
+    })
+    //查看评论
+  }
+  function updatenow() {
+    var url = "/admin/updatenow";
+    var id = $('#user_id').val();
+    var username = $('#username').val();
+    var password = $('#password').val();
+    var email = $('#email').val();
+    var postData = {
+      id: id,
+      username: username,
+      password: password,
+      email: email
+    }
+    $.post(url, postData, (data) => {
+      if (data.status == 1) {
+        layui.use('layer', function () {
+          var layer = layui.layer;
+          layer.msg('更新成功', {
+            icon: 1,
+            closeBtn: 0,
+            time: 1000
+          }, () => {
+            location.href = "/admin";
+          });
+        })
+      }
+    })
+  }
+  function delcom(id){
+    var postData={id:id};
+    var url="/admin/delcom";
+    $.post(
+      url,
+      postData,
+      (data)=>{
+        layui.use('layer', function () {
+          var layer = layui.layer;
+          if (data.status == 1) {
+          layer.msg('删除成功', {icon: 1, closeBtn: 0,time: 1000}, () => {
+            location.href = "/admin";
+          });
+        }else{
+          layer.msg('删除失败', {icon: 1,closeBtn: 0,time: 1000}, () => {
+            window.trigger(alert(1))
+            location.href = "/admin";
+          });
+        }
+        })
+      }
+    )
+  }
+</script>

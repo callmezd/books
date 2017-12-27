@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Document</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <script src="/layui/layui.js"></script>
+    <script>
+        layui.use('element', function () {
+            var element = layui.element;
+        });
+    </script>
+    <style>
+        header,
+        .layui-nav {
+            background: #428bca;
+        }
+    </style>
+</head>
+
+<body>
+        <nav class="navbar  navbar-inverse navbar-fixed-top" >
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collase">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a href="/" class="navbar-brand">首页</a>
+                    </div>
+                    <div>
+                      <div class="navbar-collapse  navbar-ex1-collase collapse" role="navigation">     
+                        <ul class="nav navbar-nav ">
+                          
+                            <li class="">
+                                <a href="/books">图书</a>
+                            </li>
+                            <li class="">
+                                <a href="">关于我们</a>
+                            </li>
+                            <li class="">
+                                <a href="">用户手册</a>
+                            </li>
+                            <%if(username){%>
+                            <li class="">
+                                    <a href="/users?id=<%-id%>">
+                                    欢迎你：<%- username%>
+                                </a>
+                            </li>
+                                <%if(username=='zd'){%>
+                                    <li><a href="/admin">管理用户</a></li>
+                                <%}%>
+                                
+                            <li>
+                                <a href="/logout">退出</a>
+                            </li>
+            
+                            <%}else{%>
+                                <li><a href="/login">
+                                    请登录
+                                </a></li>
+                                <li><a href="/register">
+                                    <span>暂无账号？</span>
+                                    请注册
+                                </a></li>
+                            <%}%>
+                         
+                        </ul>
+                    </div>
+            
+                    </div>
+                </div>
+            </nav>
+</body>
+
+</html>
+
+
+
+
+
+

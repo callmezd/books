@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="./bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="./bootstrap/js/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="./bootstrap/js/bootstrap.min.js"></script>
+    <script src="/layui/layui.js"></script>
+    <style>
+        body {
+            background: url(./images/login/56411523.jpg);
+        }
+        .main {
+            height: 600px;
+            margin-top: 60px;
+        }
+        .nowa{
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="container">
+            <h1>注册</h1>
+            
+            <form class="col-md-5 loginform" method="post" action="/users/register">
+            <a class="nowa" href="/" style="color:black;">返回首页</a>
+            
+                <div class="form-group">
+                    <label for="" style="min-width:56px">用户名</label>
+                    <span class="tip1 ck" style="margin-left:10px"></span>
+                    <input type="text" value="" class="form-control inp" name="username" id="username" placeholder="用户名">
+                </div>
+                <div class="form-group">
+                    <label for="" style="min-width:56px">密码</label>
+                    <span class="tip2 ck" style="margin-left:10px"></span>
+                    <input type="password" value="" class="form-control inp" id="password" name="password" placeholder="密码">
+                </div>
+                <div class="form-group">
+                    <label for="" style="min-width:56px">确认密码</label>
+                    <span class="tip3 ck" style="margin-left:10px"></span>
+                    <input type="password" value="" class="form-control inp" id="dbpwd" name="dbpwd" placeholder="确认密码">
+                </div>
+                <div class="form-group">
+                    <label for="" style="min-width:56px">邮箱</label>
+                    <span class="tip4 ck" style="margin-left:10px"></span>
+                    <input type="text" value="" class="form-control inp" id="email" name="email" placeholder="邮箱">
+                </div>
+                <div class="form-group">
+                    <div class="">
+                        <div class="checkbox">
+                            <label for="agree">
+
+                                <input type="checkbox" onclick="checkckbox()" checked class="ckbox" data-bol="" id="agree" name="agree">我已阅读并同意
+                                <a href="" style="font-weight:600;margin-left:10px;">《服务协议》</a>
+                                <span class="tip5 ck" style="margin-left:10px;text-decoration:underline;"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <input onclick="toReg()" type="button" value="提交" class="btn btn-default" />
+            </form>
+            <div class="col-md-6">
+                <h2>欢迎注册</h2>
+            </div>
+        </div>
+    </div>
+    <%- include("footer")%>
+</body>
+
+</html>
+<script>
+
+    $("input.inp").attr("data-bol", false);
+    checkusername();
+    checkpwd();
+    checkdbpwd();
+    checkemail();
+
+    $("#username").blur(() => {
+        checkusername();
+    })
+    $("#password").blur(() => {
+        checkpwd();
+    })
+    $("#dbpwd").blur(() => {
+        checkdbpwd();
+    })
+    $("#email").blur(() => {
+        checkemail();
+    })
+
+
+
+
+
+
+    function toReg() {
+        var ck = $('span.ck');
+        if ($('#username').attr("data-bol") == "false") {
+            checkusername();
+        } else if ($('#password').attr("data-bol") == "false") {
+            checkpwd();
+        } else if ($('#dbpwd').attr("data-bol") == "false") {
+            checkdbpwd();
+        } else if ($('#email').attr("data-bol") == "false") {
+            checkemail();
+        } else if ($('#email').is(':checked') == true) {
+            checkckbox();
+        } else {
+            var registerUrl = "users/register";
+            var postData = {
+                username: $('#username').val(),
+                password: $('#password').val(),
+                email: $('#email').val()
+            };
+            $.post(registerUrl, postData, (data) => {
+                if (data.status == 0) {
+                    layui.use('layer', function () {
+                            var layer = layui.layer;
+                            layer.msg('注册成功！正在跳转', {
+                                icon: 1,
+                                time: 2000,
+                                anim: 1     //6抖动
+                            }, function () {
+                                location.href="/login";
+                            });
+                        })
+                } else {
+                    layui.use('layer', function () {
+                        var layer = layui.layer;
+
+                        layui.use('layer', function () {
+                            var layer = layui.layer;
+                            layer.msg('注册失败,用户名已被使用！麻烦换一个吧！', {
+                                icon: 2,
+                                time: 2000,
+                                anim: 6     //6抖动
+                            }, function () {
+                            });
+                        })
+
+                     
+                    });
+                }
+            })
+        }
+    }
+
+
+
+
+
+
+    function checkusername() {
+        var val = $('#username').val();
+        if (val == "") {
+            $('.tip1').text("用户名不能为空！");
+            $('#username').attr('data-bol', false);
+        } else {
+            if (val.length < 4) {
+                $('.tip1').text("用户名至少有4个字符!");
+                $('#username').attr('data-bol', false);
+            } else {
+                if (/^\d+$/.test(val) == true || /^[a_zA_Z]+$/.test(val) == true) {
+                    $('.tip1').text("用户名不能为纯数字或者纯英文!");
+                    $('#username').attr('data-bol', false);
+                } else {
+                    $('.tip1').text("");
+                    $('#username').attr('data-bol', true);
+                }
+            }
+
+        }
+
+    }
+    function checkpwd() {
+        var val = $('#password').val();
+        if (val == "") {
+            $('.tip2').text("密码不能为空!");
+            $('#password').attr('data-bol', false);
+
+        } else {
+            if (/^\d+$/.test(val) == true || /^[a_zA_Z]+$/.test(val) == true) {
+                $('.tip2').text("密码太简单！建议修改");
+                $('#password').attr('data-bol', false);
+
+            } else {
+                $('.tip2').text("")
+                $('#password').attr('data-bol', true);
+
+            }
+        }
+    }
+    function checkdbpwd() {
+        var val = $('#password').val();
+        var dbval = $('#dbpwd').val();
+        if (dbval != val) {
+            $('.tip3').text("两次密码输入不一致");
+            $('#dbpwd').attr('data-bol', false);
+        } else {
+            $('.tip3').text("");
+            $('#dbpwd').attr('data-bol', true);
+        }
+    }
+    function checkemail() {
+        var val = $('#email').val();
+        if (val == "") {
+            $('.tip4').text("邮箱不能为空");
+            $('#email').attr('data-bol', false);
+        } else {
+            if (/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(val) == false) {
+                $('.tip4').text("邮箱格式不正确");
+                $('#email').attr('data-bol', false);
+            } else {
+                $('.tip4').text("");
+                $('#email').attr('data-bol', true);
+
+            }
+        }
+    }
+    function checkckbox() {
+        var val = $('.ckbox').is(':checked');
+        if (val == true) {
+            $('.tip5').text("");
+
+        }
+        if (val == false) {
+            $('.tip5').text("请先同意《服务协议》");
+        }
+    }
+</script>

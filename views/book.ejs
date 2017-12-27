@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="../bootstrap/js/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
+</head>
+<style>
+    /* html,body,.book_detail{height: 100%;} */
+
+    .book_detail {
+        margin-top: 60px;
+        overflow: hidden
+    }
+
+    .book_detail p:nth-of-type(1) {
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .book_detail p:nth-of-type(4) {
+        overflow: hidden;
+        max-height: 400px;
+    }
+
+    strong {
+        display: inline-block;
+        height: 21px;
+        text-align: center;
+        border-radius: 9px;
+        padding: 0 10px;
+        border: 1px solid #cccccc;
+        margin-top: 10px;
+        line-height: 21px;
+        font-weight: 500;
+
+    }
+
+    strong:hover {
+        background: #428bca;
+        border-color: #428bca;
+        color: white;
+    }
+
+    .com_p {
+        margin-top: 60px;
+        font-size: 20px;
+        border-bottom: 1px solid #cccccc;
+    }
+
+    .com_form {
+        margin-top: 20px;
+        overflow: hidden;
+    }
+
+    .com_list {
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .com_list li {
+        overflow: hidden;
+
+        min-height: 50px;
+        list-style: none;
+        border: 1px solid;
+        margin-top: 10px;
+    }
+    .com_list li p:nth-of-type(1) {
+        text-indent: 2em;
+    }
+
+
+    .com_list li {
+
+        display: block;
+        width: 100%;
+
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .nocom{
+        height: 50px;
+        line-height: 50px;
+    }
+</style>
+<body>
+    <%- include("header")%>
+            <div class="container  book_detail">
+                <img class="img-responsive col-md-5" src="<%- result.image%>" alt="">
+                <div class="right col-md-7 ">
+                    <p>
+                        <%- result.title%>
+                    </p>
+                    <p>作者:
+                        <span>
+                            <%- result.author%>
+                        </span>
+                    </p>
+                    <p> 出版社：
+                        <span>
+                            <%-result.publisher%>
+                        </span>
+                    </p>
+                    <%if(result.summary!=""){%>
+                        <p class="hidden-xs">
+                            简介:
+                            <span class="">
+                                <%-result.summary%>
+                            </span>
+                        </p>
+                        <%}%>
+                </div>
+            </div>
+            <!-- 评论 -->
+            <p class="container com_p"> 评论</p>
+            <form class="form-horizontal com_form" role="form" method="post" action="/books/comm?id=<%-result.id%>">
+                <div class="form-group">
+                    <label for="" class="col-sm-1 control-label">标题</label>
+                    <div class="col-sm-11">
+                        <input type="text" class="form-control" id="" name="title" placeholder="请输入标题" required>
+                    </div>
+                </div>
+                <div class="form-group hide">
+                        <label for="" class="col-sm-1 control-label"></label>
+                        <div class="col-sm-11">
+                            <input type="text" class="form-control" id="" name="booktitle" value="<%- result.title%>" required>
+                        </div>
+                    </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-1 control-label">内容</label>
+                    <div class="col-sm-11">
+                        <textarea class="form-control" name="centent" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="col-sm-offset-1 col-sm-10">
+                    <%if(!username){%>
+                        <input type="button" class="btn btn-default" onclick="gologin()" value="发表" style="background:white;" />
+                    <%}else{%>
+                        <input type="submit" class="btn btn-default" value="发表" />
+                    <%}%>
+                </div>
+                <script>
+                    function tologin() {
+                        alert("请先登录");
+                        location.href = "/login";
+                    }
+                </script>
+            </form>
+            <!-- 评论列表 -->
+            <p class="container com_p"> 评论列表</p>
+            <ul class="container com_list">
+                <%if(comment.length!=0){%>
+                    <%comment.forEach((val,ind)=>{%>
+                <li class="col-md-12">
+                    <h4 class="col-md-12">
+                        <%-val.title%>
+                    </h4>
+                    <p class="col-md-12">
+                            <%-val.centent%>
+                    </p>
+                    <p class="col-md-12 col-md-offset-11">
+                            <%-val.username%>
+                    </p>
+                    <p class="col-md-12 col-md-offset-10">
+                           发布于：<%-val.time%>
+                    </p>
+
+                </li>
+                <%})%>
+            <%}else{%>
+                    <h2 class="col-md-12 nocom">
+                    暂无评论，快抢沙发.....
+                    </h2>
+            <%}%>
+            </ul>
+            <%- include("footer")%>
+</body>
+</html>
+<script src="/layui/layui.js"></script>
+    
+<script>
+
+    function gologin(){
+        layui.use('layer', function () {
+                        var layer = layui.layer;
+                        layer.msg('游客请登录', {
+                            closeBtn: 0,
+                            time: 1000
+                        },()=>{ 
+                                location.href = "/login";
+                    });
+                    });
+
+    }
+</script>

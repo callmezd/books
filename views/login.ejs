@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="../bootstrap/js/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
+    
+    <style>
+        body {
+            background: url(../images/login/56411523.jpg);
+        }
+        .loginright {
+            height: 200px;
+            background-size:50%; 
+        }
+        .main {
+            height: 600px;
+            margin-top: 60px;
+        }
+        .nowa{
+            margin-bottom: 20px;
+            margin-top: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="container">
+            <h1>登录</h1>
+            <form class="col-md-5 loginform" action="/users/login" method="post">
+            <a class="nowa" href="/register" style="color:black;">暂无账号请注册</a>
+            <a class="nowa" href="/" style="color:black;">返回首页</a>
+            
+                <div class="form-group">
+            
+                    <label for="">用户名</label>
+                    <input type="text" class="form-control" value="" name="username" id="log_user" placeholder="用户名">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">密码</label>
+                    <input type="password" class="form-control" name="password" id="log_pwd" placeholder="密码">
+                </div>
+                <div class="form-group">
+                </div>
+            
+                <input type="button" onclick="login()" class="btn btn-default" value="登录">
+            </form>
+            <div class="col-md-6 loginright">
+               
+            </div>
+        </div>
+    </div>
+</body>
+<%- include("footer")%>
+
+</html>
+<script src="/layui/layui.js"></script>
+<script>
+    //登录
+function login(){
+    var url = "/users/login";
+    var postData = {
+        username: $('#log_user').val(),
+        password: $('#log_pwd').val()
+    }
+    $.post(url, postData, (data) => {
+            if (data.status == 1) {
+                layui.use('layer', function () {
+                        var layer = layui.layer;
+                        layer.msg('登录成功，正在跳转', {
+                            closeBtn: 0,
+                            time: 1000
+                        },()=>{ 
+                                location.href = "/";
+                    });
+                    });
+            } else {
+                layui.use('layer', function () {
+                    var layer = layui.layer;
+                    layer.msg('用户名或者密码错误', {
+                    closeBtn: 0,
+                    time: 1500
+                },()=>{
+                    });
+                })
+            }
+        }
+    )
+}
+
+</script>

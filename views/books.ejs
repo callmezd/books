@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="./bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="./bootstrap/js/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="./bootstrap/js/bootstrap.min.js"></script>
+</head>
+</head>
+<style>
+    .books {
+        font-size: 12px;
+        margin: 50px  auto;
+    }
+
+    .book {
+        margin-top: 20px;
+        overflow: hidden;
+    }
+
+    .bookswrap {
+        padding: 13px;
+        
+        box-shadow:  3px 3px 0 #ccc;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        min-height: 322px;
+    }
+
+    p,
+    .showdetail {
+        height: 20;
+        margin-top: 15px;
+        line-height: 20px;
+    }
+    .imgwrap{
+        min-height:150px;
+    }
+
+    p:nth-of-type(1) {
+        font-size: 20px;
+        line-height: 40px;
+        height: 40px;
+        color: #428bca;
+        font-weight: 600;
+        font-family: "黑体";
+    }
+</style>
+
+<body>
+    <%- include("header")%>
+        <div class="books container">
+            <%result.forEach((val,ind)=>{%>
+                <div class="col-xs-12 col-sm-3  book">
+                    <div class="bookswrap ">
+                        <div class="imgwrap">
+                            <img class="img-responsive" src="<%- val.image%>" alt="">
+
+                        </div>
+          
+                        <p>
+                            <%- val.title%>
+                        </p>
+                        <p>作者:
+                            <%- val.author%>
+                        </p>
+                        <p> 出版社：
+
+                            <%-val.publisher%>
+
+                        </p>
+                        <%if(val.summary!=""){%>
+                            <p class="visible-xs  ">
+
+                                简介:
+                                <span>
+                                    <%-val.summary%>
+                                </span>
+                            </p>
+                            <p class=" ">
+                                评分:
+                                <%-val.rating["average"]%>
+                            </p>
+                            <p class=" ">
+                                价格: ￥
+                                <%-val.price%>
+                            </p>
+                            <%}%>
+                                <a class="showdetail" href="/books/detail?id=<%-val.id%>">查看详情</a>
+                    </div>
+                </div>
+
+                <%})%>
+        </div>
+        <%- include("footer")%>
+</body>
+
+</html>

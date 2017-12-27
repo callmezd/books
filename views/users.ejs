@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+
+    <link rel="stylesheet" type="text/css" href="./bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="./bootstrap/js/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="./bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="/layui/layui.js"></script>
+</head>
+</head>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    .main {
+        /* background: url(./images/login/cfb0979e896bdc10db7e52af7940dc52.jpg) no-repeat 80% 50%; */
+        /* background-size:30%;  */
+        /* height: 600px; */
+        color: #cccccc;
+        font-size: 12px;
+    }
+
+    .main span {
+        font-size: 15px;
+    }
+
+    .main span:hover {
+        color: #ca373f;
+    }
+
+    .userinfo {
+        padding-top: 100px;
+        height: 500px;
+    }
+</style>
+
+<body>
+    <%- include("header")%>
+        <div class="container userinfo">
+            <div class="form-group">
+                <label for="exampleInputEmail1">username</label>
+                <input type="text" class="form-control" name="username" id="username" value="<%-result[0].username%>">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="text" class="form-control" name="password" id="password" value="<%-result[0].password%>">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">email</label>
+                <input type="text" class="form-control" id="email" name="email" value="<%-result[0].email%>">
+            </div>
+
+            <button onclick="update('<%-id%>')" class="btn btn-default">update</button>
+
+        </div>
+        <div class="main ">
+
+        </div>
+
+
+
+</body>
+
+</html>
+<script>
+    function update(id) {
+        var postdata = {
+            username: $('#username').val(),
+            email: $('#email').val(),
+            password: $('#password').val(),
+            id
+        }
+        $.post(
+            "/users/update",
+            postdata,
+            (data) => {
+                if (data.status == 1) {
+                    layui.use('layer', function () {
+                        var layer = layui.layer;
+                        layer.msg('修改成功', { icon: 1, closeBtn: 0, time: 1000 }, () => {
+                            location.href = `/users?id=${id}`;
+                        });
+
+                    })
+                }
+            }
+        )
+    }
+</script>
